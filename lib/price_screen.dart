@@ -48,9 +48,10 @@ class _PriceScreenState extends State<PriceScreen> {
       value: _selectedCurrency,
       items: list,
       onChanged: (value) async {
-        rate = await coinData.exchangeRate(_selectedCrypto, value);
+        String newRate = await coinData.exchangeRate(_selectedCrypto, value);
         setState(
           () {
+            rate = newRate;
             _selectedCurrency = value;
             print('rate we have: $rate');
           },
@@ -70,9 +71,12 @@ class _PriceScreenState extends State<PriceScreen> {
 
     return CupertinoPicker(
       itemExtent: 32.0,
-      onSelectedItemChanged: (itemSelected) {
+      onSelectedItemChanged: (itemSelected) async {
+        String value = itemSelected.toString();
+        var newRate = await coinData.exchangeRate(_selectedCrypto, value);
         setState(() {
-          _selectedCurrency = itemSelected.toString();
+          rate = newRate;
+          _selectedCurrency = value;
         });
       },
       children: list,
