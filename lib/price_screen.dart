@@ -10,6 +10,7 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String _selectedCurrency = 'USD';
+  CoinData coinData = CoinData();
 
   DropdownButton dropDownList() {
     List<DropdownMenuItem<String>> list = [];
@@ -97,14 +98,3 @@ class _PriceScreenState extends State<PriceScreen> {
     );
   }
 }
-
-//DropdownButton<String>(
-//value: _selectedCurrency,
-//items: widget.dropDownChoices,
-//onChanged: (value) {
-//print(value);
-//setState(() {
-//_selectedCurrency = value;
-//});
-//},
-//)
