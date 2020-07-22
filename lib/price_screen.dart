@@ -4,13 +4,33 @@ import 'dart:io' show Platform;
 import 'package:bitcoin_ticker/coin_data.dart';
 
 class PriceScreen extends StatefulWidget {
+  final String initialRate;
+  final CoinData coinData;
+
   @override
   _PriceScreenState createState() => _PriceScreenState();
+
+  PriceScreen({this.initialRate, this.coinData});
 }
 
 class _PriceScreenState extends State<PriceScreen> {
   String _selectedCurrency = 'USD';
-  CoinData coinData = CoinData();
+  String _selectedCrypto = 'BTC';
+  CoinData coinData;
+  String rate;
+
+  @override
+  void initState() {
+    super.initState();
+    updateUI();
+  }
+
+  void updateUI() {
+    setState(() {
+      rate = widget.initialRate;
+      coinData = widget.coinData;
+    });
+  }
 
   DropdownButton dropDownList() {
     List<DropdownMenuItem<String>> list = [];
@@ -27,10 +47,14 @@ class _PriceScreenState extends State<PriceScreen> {
     return DropdownButton<String>(
       value: _selectedCurrency,
       items: list,
-      onChanged: (value) {
-        setState(() {
-          _selectedCurrency = value;
-        });
+      onChanged: (value) async {
+        rate = await coinData.exchangeRate(_selectedCrypto, value);
+        setState(
+          () {
+            _selectedCurrency = value;
+            print('rate we have: $rate');
+          },
+        );
       },
     );
   }
@@ -76,7 +100,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 $_selectedCrypto = $rate $_selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
