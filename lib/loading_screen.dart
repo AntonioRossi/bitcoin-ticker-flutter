@@ -17,7 +17,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void getDefaultRate() async {
     CoinData coinData = CoinData();
-    var initialRate = await coinData.exchangeRate('BTC', 'UDS');
+    var initialRate = await coinData.exchangeRate('BTC', 'USD');
     print(initialRate);
     print('got default rate $initialRate');
 
