@@ -1,9 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 import 'package:bitcoin_ticker/coin_data.dart';
 
 class PriceScreen extends StatefulWidget {
-  static List<DropdownMenuItem<String>> dropDownList() {
+  @override
+  _PriceScreenState createState() => _PriceScreenState();
+}
+
+class _PriceScreenState extends State<PriceScreen> {
+  String _selectedCurrency = 'USD';
+
+  DropdownButton dropDownList() {
     List<DropdownMenuItem<String>> list = [];
 
     for (String currency in currenciesList) {
@@ -14,10 +22,19 @@ class PriceScreen extends StatefulWidget {
 
       list.add(item);
     }
-    return list;
+
+    return DropdownButton<String>(
+      value: _selectedCurrency,
+      items: list,
+      onChanged: (value) {
+        setState(() {
+          _selectedCurrency = value;
+        });
+      },
+    );
   }
 
-  static List<Text> cupertinoFiat() {
+  CupertinoPicker cupertinoFiat() {
     List<Text> list = [];
 
     for (String currency in currenciesList) {
@@ -25,18 +42,17 @@ class PriceScreen extends StatefulWidget {
 
       list.add(item);
     }
-    return list;
+
+    return CupertinoPicker(
+      itemExtent: 32.0,
+      onSelectedItemChanged: (itemSelected) {
+        setState(() {
+          _selectedCurrency = itemSelected.toString();
+        });
+      },
+      children: list,
+    );
   }
-
-  final List<DropdownMenuItem<String>> dropDownChoices = dropDownList();
-  final List<Text> cupertinoList = cupertinoFiat();
-
-  @override
-  _PriceScreenState createState() => _PriceScreenState();
-}
-
-class _PriceScreenState extends State<PriceScreen> {
-  String _selectedCurrency = 'USD';
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +90,7 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: CupertinoPicker(
-              itemExtent: 32.0,
-              onSelectedItemChanged: (itemSelected) {
-                print(itemSelected);
-              },
-              children: widget.cupertinoList,
-            ),
+            child: Platform.isIOS ? cupertinoFiat() : dropDownList(),
           ),
         ],
       ),
